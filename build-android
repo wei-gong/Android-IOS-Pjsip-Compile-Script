@@ -1,0 +1,24 @@
+#!/bin/sh
+#生成config_site.h文件
+touch pjlib/include/pj/config_site.h
+echo "#include <pj/config_site_sample.h>
+#define PJ_CONFIG_ANDROID 1
+" > pjlib/include/pj/config_site.h
+
+#设置使用的ndk路径和Android版本
+export ADNROID_NDK_ROOT=~/Library/Android/android-ndk-r15c
+export APP_PLATFORM=android-21
+
+#如果编译除armeabi外的CPU架构的so库，需要增加--use-ndk-cflags
+#export TARGET_ABI=armeabi-v7a
+#./configure-android --use-ndk-cflags
+
+export TARGET_ABI=armeabi
+./configure-android
+make dep && make clean && make
+cd pjsip-apps/src/swig
+make clean
+make
+rm ../../../pjlib/include/pj/config_site.h
+
+
